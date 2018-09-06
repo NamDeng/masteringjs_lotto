@@ -37,37 +37,38 @@ const LOTTO = {
         "FOURTH" : 5000
     }
 }
-const winningCountList = { 
-    "3" : 0,
-    "4" : 0,
-    "5" : 0,
-    "6" : 0
-}
 
 function buyLottos(money) {
     const count = money / LOTTO.PRICE;
     console.log("로또 " + count + "개를 발행했습니다.");
 
+    function assignNumbers(count) {
+        const lottoBuyingList = [];
+        for(let i=0; i<count; i++) {
+            const myLottoNumbersSet = new Set();
+            while(myLottoNumbersSet.size < LOTTO.COUNT_LIMIT) {
+                myLottoNumbersSet.add(getLottoRandomNumber(LOTTO.MIN_NUM, LOTTO.MAX_NUM));
+            }
+            lottoBuyingList.push(myLottoNumbersSet);
+        }
+    
+        function getLottoRandomNumber(minNumber, maxNumber) {
+            return Math.floor(Math.random() * maxNumber) + minNumber;
+        }
+    
+        return lottoBuyingList;
+    }
+
     return assignNumbers(count);
 }
 
-function assignNumbers(count) {
-    const lottoBuyingList = [];
-    for(let i=0; i<count; i++) {
-        const myLottoNumbersSet = new Set();
-        while(myLottoNumbersSet.size < LOTTO.COUNT_LIMIT) {
-            myLottoNumbersSet.add(getLottoNumber());
-        }
-        lottoBuyingList.push(myLottoNumbersSet);
-    }
-    return lottoBuyingList;
-}
-
-function getLottoNumber() {
-    return Math.floor(Math.random() * LOTTO.MAX_NUM) + LOTTO.MIN_NUM;
-}
-
 function setLuckyNumbers(luckyNumberList) {
+    const winningCountList = { 
+        "3" : 0,
+        "4" : 0,
+        "5" : 0,
+        "6" : 0
+    }
     lottoBuyingList.forEach((myLottoNumbersSet) => {
         let count = 0;
         luckyNumberList.forEach((luckyNumber) => {
@@ -75,15 +76,14 @@ function setLuckyNumbers(luckyNumberList) {
         });
         winningCountList[count]++;
     });
+
+    function announceLotto(winningCountList) {
+        console.log("3개 일치 ( " + LOTTO.PRIZES.FOURTH + "원 )- " + winningCountList[3] + "개");
+        console.log("4개 일치 ( " + LOTTO.PRIZES.THIRD + "원 )- " + winningCountList[4] + "개");
+        console.log("5개 일치 ( " + LOTTO.PRIZES.SECOND + "원 )- " + winningCountList[5] + "개");
+        console.log("6개 일치 ( " + LOTTO.PRIZES.FIRST + "원 )- " + winningCountList[6] + "개");
+    }
     announceLotto(winningCountList);
 }
-
-function announceLotto(winningCountList) {
-    console.log("3개 일치 ( " + LOTTO.PRIZES.FOURTH + "원 )- " + winningCountList[3] + "개");
-    console.log("4개 일치 ( " + LOTTO.PRIZES.THIRD + "원 )- " + winningCountList[4] + "개");
-    console.log("5개 일치 ( " + LOTTO.PRIZES.SECOND + "원 )- " + winningCountList[5] + "개");
-    console.log("6개 일치 ( " + LOTTO.PRIZES.FIRST + "원 )- " + winningCountList[6] + "개");
-}
-
 const lottoBuyingList = buyLottos(1000000);
-setLuckyNumbers([5, 26, 7, 12, 9, 30]);
+setLuckyNumbers([5, 26, 7, 12, 9, 30]); 
